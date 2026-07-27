@@ -376,13 +376,13 @@ class Alarm(Component):
         cls,
         description: str,
         trigger: timedelta | datetime,
+        concepts: CONCEPTS_TYPE_SETTER = None,
         duration: timedelta | None = None,
+        links: LINKS_TYPE_SETTER = None,
+        refids: list[str] | str | None = None,
+        related_to: RELATED_TO_TYPE_SETTER = None,
         repeat: int | None = None,
         uid: str | uuid.UUID | None = None,
-        links: LINKS_TYPE_SETTER = None,
-        related_to: RELATED_TO_TYPE_SETTER = None,
-        refids: list[str] | str | None = None,
-        concepts: CONCEPTS_TYPE_SETTER = None,
     ) -> Alarm:
         """Create a new DISPLAY alarm that shows a text reminder.
 
@@ -391,22 +391,24 @@ class Alarm(Component):
 
         Conforms to :rfc:`5545#section-3.6.6`.
 
+        .. versionadded:: 7.3.0
+
         Parameters:
             description: The text to display when the alarm fires.
                 Corresponds to the :attr:`description` property.
             trigger: When the alarm fires, as a :class:`~datetime.timedelta`
                 relative to the event start (negative means before) or as an
                 absolute :class:`~datetime.datetime` (recommend UTC-aware).
+            concepts: The :attr:`~icalendar.cal.component.Component.concepts` of the alarm.
             duration: Gap between repeated triggers. Must be paired with
                 ``repeat``. Corresponds to the :attr:`DURATION` property.
+            links: The :attr:`~icalendar.cal.component.Component.links` of the alarm.
+            refids: The :attr:`~icalendar.cal.component.Component.refids` of the alarm.
+            related_to: The :attr:`~icalendar.cal.component.Component.related_to` of the alarm.
             repeat: Number of *additional* times to fire after the initial
                 trigger. Must be paired with ``duration``.
                 Corresponds to the :attr:`REPEAT` property.
             uid: Unique identifier for the alarm or ``None``.
-            links: The :attr:`~icalendar.cal.component.Component.links` of the alarm.
-            related_to: The :attr:`~icalendar.cal.component.Component.related_to` of the alarm.
-            refids: The :attr:`~icalendar.cal.component.Component.refids` of the alarm.
-            concepts: The :attr:`~icalendar.cal.component.Component.concepts` of the alarm.
 
         Returns:
             :class:`Alarm` with ``ACTION:DISPLAY`` set.
@@ -472,13 +474,13 @@ class Alarm(Component):
         cls,
         trigger: timedelta | datetime,
         attach: str | bytes | None = None,
+        concepts: CONCEPTS_TYPE_SETTER = None,
         duration: timedelta | None = None,
+        links: LINKS_TYPE_SETTER = None,
+        refids: list[str] | str | None = None,
+        related_to: RELATED_TO_TYPE_SETTER = None,
         repeat: int | None = None,
         uid: str | uuid.UUID | None = None,
-        links: LINKS_TYPE_SETTER = None,
-        related_to: RELATED_TO_TYPE_SETTER = None,
-        refids: list[str] | str | None = None,
-        concepts: CONCEPTS_TYPE_SETTER = None,
     ) -> Alarm:
         """Create a new AUDIO alarm that plays a sound.
 
@@ -487,6 +489,8 @@ class Alarm(Component):
         the client uses its default alert sound.
 
         Conforms to :rfc:`5545#section-3.6.6`.
+
+        .. versionadded:: 7.3.0
 
         Parameters:
             trigger: When the alarm fires, as a :class:`~datetime.timedelta`
@@ -497,16 +501,16 @@ class Alarm(Component):
                 sound file, or :class:`bytes` for inline binary audio data
                 (stored as ``VALUE=BINARY``). When ``None`` the client uses
                 its default sound.
+            concepts: The :attr:`~icalendar.cal.component.Component.concepts` of the alarm.
             duration: Gap between repeated triggers. Must be paired with
                 ``repeat``. Corresponds to the :attr:`DURATION` property.
+            links: The :attr:`~icalendar.cal.component.Component.links` of the alarm.
+            refids: The :attr:`~icalendar.cal.component.Component.refids` of the alarm.
+            related_to: The :attr:`~icalendar.cal.component.Component.related_to` of the alarm.
             repeat: Number of *additional* times to fire after the initial
                 trigger. Must be paired with ``duration``.
                 Corresponds to the :attr:`REPEAT` property.
             uid: Unique identifier for the alarm or ``None``.
-            links: The :attr:`~icalendar.cal.component.Component.links` of the alarm.
-            related_to: The :attr:`~icalendar.cal.component.Component.related_to` of the alarm.
-            refids: The :attr:`~icalendar.cal.component.Component.refids` of the alarm.
-            concepts: The :attr:`~icalendar.cal.component.Component.concepts` of the alarm.
 
         Returns:
             :class:`Alarm` with ``ACTION:AUDIO`` set.
@@ -559,13 +563,13 @@ class Alarm(Component):
         trigger: timedelta | datetime,
         attendees: Sequence[vCalAddress] | vCalAddress,
         attachments: Sequence[str] | str | None = None,
+        concepts: CONCEPTS_TYPE_SETTER = None,
         duration: timedelta | None = None,
+        links: LINKS_TYPE_SETTER = None,
+        refids: list[str] | str | None = None,
+        related_to: RELATED_TO_TYPE_SETTER = None,
         repeat: int | None = None,
         uid: str | uuid.UUID | None = None,
-        links: LINKS_TYPE_SETTER = None,
-        related_to: RELATED_TO_TYPE_SETTER = None,
-        refids: list[str] | str | None = None,
-        concepts: CONCEPTS_TYPE_SETTER = None,
     ) -> Alarm:
         """Create a new EMAIL alarm that sends an email notification.
 
@@ -573,6 +577,8 @@ class Alarm(Component):
         the alarm fires.
 
         Conforms to :rfc:`5545#section-3.6.6`.
+
+        .. versionadded:: 7.3.0
 
         Parameters:
             summary: Subject line of the email.
@@ -588,16 +594,16 @@ class Alarm(Component):
                 required.
             attachments: Optional URI or sequence of URIs to attach to the
                 email.
+            concepts: The :attr:`~icalendar.cal.component.Component.concepts` of the alarm.
             duration: Gap between repeated triggers. Must be paired with
                 ``repeat``. Corresponds to the :attr:`DURATION` property.
+            links: The :attr:`~icalendar.cal.component.Component.links` of the alarm.
+            refids: The :attr:`~icalendar.cal.component.Component.refids` of the alarm.
+            related_to: The :attr:`~icalendar.cal.component.Component.related_to` of the alarm.
             repeat: Number of *additional* times to fire after the initial
                 trigger. Must be paired with ``duration``.
                 Corresponds to the :attr:`REPEAT` property.
             uid: Unique identifier for the alarm or ``None``.
-            links: The :attr:`~icalendar.cal.component.Component.links` of the alarm.
-            related_to: The :attr:`~icalendar.cal.component.Component.related_to` of the alarm.
-            refids: The :attr:`~icalendar.cal.component.Component.refids` of the alarm.
-            concepts: The :attr:`~icalendar.cal.component.Component.concepts` of the alarm.
 
         Returns:
             :class:`Alarm` with ``ACTION:EMAIL`` set.

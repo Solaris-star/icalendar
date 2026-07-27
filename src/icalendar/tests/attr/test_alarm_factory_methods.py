@@ -1,6 +1,7 @@
 """Tests for Alarm.new_display(), Alarm.new_audio(), and Alarm.new_email()."""
 
 from datetime import datetime, timedelta, timezone
+from inspect import Parameter, signature
 
 import pytest
 
@@ -249,3 +250,74 @@ def test_new_email_single_attachment():
     )
     assert "ATTACH" in alarm
     assert str(alarm["ATTACH"]) == "https://example.com/file.pdf"
+
+
+FACTORY_CALLS = [
+    pytest.param(
+        lambda **kw: Alarm.new_display("desc", timedelta(minutes=-15), **kw),
+        id="display",
+    ),
+    pytest.param(
+        lambda **kw: Alarm.new_audio(timedelta(minutes=-5), **kw),
+        id="audio",
+    ),
+    pytest.param(
+        lambda **kw: Alarm.new_email(
+            summary="S",
+            description="D",
+            trigger=timedelta(minutes=-30),
+            attendees=[vCalAddress("mailto:user@example.com")],
+            **kw,
+        ),
+        id="email",
+    ),
+]
+
+
+@pytest.mark.parametrize("factory", FACTORY_CALLS)
+def test_factory_forwards_relationship_attributes(factory):
+    """All Alarm factory methods forward the RFC 9253 attributes to Alarm.new()."""
+    alarm = factory(
+        links="https://example.com/link",
+        related_to="parent-uid",
+        refids="refid-1",
+        concepts="https://example.com/concept",
+    )
+    assert alarm.links == ["https://example.com/link"]
+    assert alarm.related_to == ["parent-uid"]
+    assert alarm.refids == ["refid-1"]
+    assert alarm.concepts == ["https://example.com/concept"]
+
+
+@pytest.mark.parametrize("factory", FACTORY_CALLS)
+def test_factory_uid_is_forwarded(factory):
+    """All Alarm factory methods forward ``uid`` to Alarm.new()."""
+    alarm = factory(uid="alarm-uid-1")
+    assert alarm.uid == "alarm-uid-1"
+
+
+@pytest.mark.parametrize("factory", FACTORY_CALLS)
+def test_factory_optional_parameters_are_keyword_compatible(factory):
+    """Optional parameters stay addressable by keyword."""
+    alarm = factory(duration=timedelta(minutes=1), repeat=2)
+    assert alarm["DURATION"].td == timedelta(minutes=1)
+    assert alarm["REPEAT"] == 2
+
+
+@pytest.mark.parametrize(
+    "method",
+    [Alarm.new, Alarm.new_display, Alarm.new_audio, Alarm.new_email],
+    ids=["new", "display", "audio", "email"],
+)
+def test_optional_parameters_are_in_alphabetical_order(method):
+    """Optional parameters of every Alarm factory are in alphabetical order.
+
+    :meth:`Alarm.new` sets the convention, so the three action-specific
+    factories have to follow it.
+    """
+    optional = [
+        name
+        for name, parameter in signature(method).parameters.items()
+        if parameter.default is not Parameter.empty
+    ]
+    assert optional == sorted(optional)
